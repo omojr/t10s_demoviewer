@@ -1,3 +1,4 @@
+import operator
 import os
 import sqlite3
 
@@ -15,6 +16,7 @@ def main():
     cursor = get_conn().cursor()
     cursor.execute('select demo_id, server, map, datetime from demos;')
     demos = cursor.fetchall()
+    demos.sort(key=operator.itemgetter('datetime'), reverse=True)
     return render_template('index.html', demos=demos)
 
 
