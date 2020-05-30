@@ -34,7 +34,7 @@ def parse_demolist(demodir, server_name, filelist):
             }
             result.append(info)
     return result
-    
+
 
 def retrieve_demo_list(creds):
     """Return list of all .dem files on the server (default dir)"""
@@ -66,7 +66,7 @@ def download_new_demos(new_demos, server_config):
         }
         link = DOWNLOAD_LINK.format(**format_args)
         download_args.append((link, demo['filepath']))
-    
+
     with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
         futures = [executor.submit(download_demo, *args) for args in download_args]
         for future in concurrent.futures.as_completed(futures):
@@ -78,17 +78,17 @@ def save_demos_db(new_demos):
     conn = get_conn()
     cursor = conn.cursor()
     for demo in new_demos:
-        print(demo)
         demo_id = str(uuid.uuid4())
-        cursor.execute('''insert into demos(demo_id, server, filepath, map, datetime) 
+        cursor.execute('''insert into demos(demo_id, server, filepath, map, datetime)
                           values (?, ?, ?, ?, ?)''',
-                       (demo_id, 
+                       (demo_id,
                         demo['server'],
                         demo['filepath'],
                         demo['map'],
                         demo['datetime'],))
     conn.commit()
     print('Saved demos')
+
 
 def update_demos():
     """
@@ -114,7 +114,7 @@ def update_demos():
 
     download_new_demos(new_demos, config['servers'])
     save_demos_db(new_demos)
-    
+
 
 if __name__ == '__main__':
     update_demos()
