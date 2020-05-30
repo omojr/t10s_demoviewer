@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Tuesday Tens Demos</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->	
+	<link rel="icon" type="image/png" href="{{ url_for('static', filename='icons/t10s.ico')}}"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css')}}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fonts/font-awesome-4.7.0/css/font-awesome.min.css')}}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/animate/animate.css')}}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/select2/select2.min.css')}}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/perfect-scrollbar/perfect-scrollbar.css')}}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/util.css')}}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css')}}">
+<!--===============================================================================================-->
+</head>
+<body>
+	
+	<div class="limiter">
+		<div class="container-table100">
+			<div class="wrap-table100">
+
+				<div class="table100 ver3 m-b-110">
+					<div class="table100-head">
+						<table>
+							<thead>
+								<tr class="row100 head">
+									<th class="cell100 column1">Server</th>
+									<th class="cell100 column2">Recorded</th>
+									<th class="cell100 column3">Map</th>
+									<th class="cell100 column4">Download link</th>
+								</tr>
+							</thead>
+						</table>
+					</div>
+
+					<div class="table100-body js-pscroll">
+						<table>
+							<tbody>
+								{% for demo in demos %}
+								<tr class="row100 body">
+									<td class="cell100 column1">{{ demo['server'] }}</td>
+									<td class="cell100 column2">{{ demo['datetime'] }}</td>
+									<td class="cell100 column3">{{ demo['map'] }}</td>
+									<td class="cell100 column4"><a href="/get/{{demo['demo_id']}}">Download</a></td>
+								</tr>
+								{% endfor %}
+
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+
+<!--===============================================================================================-->	
+	<script src="{{ url_for('static', filename='vendor/jquery/jquery-3.2.1.min.js') }}"></script>
+<!--===============================================================================================-->
+	<script src="{{ url_for('static', filename='vendor/bootstrap/js/popper.js') }}"></script>
+	<script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.min.js') }}"></script>
+<!--===============================================================================================-->
+	<script src="{{ url_for('static', filename='vendor/select2/select2.min.js') }}"></script>
+<!--===============================================================================================-->
+	<script src="{{ url_for('static', filename='vendor/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
+	<script>
+		$('.js-pscroll').each(function(){
+			var ps = new PerfectScrollbar(this);
+
+			$(window).on('resize', function(){
+				ps.update();
+			})
+		});
+			
+		
+	</script>
+<!--===============================================================================================-->
+	<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+	<script type="text/javascript">
+		var s = ' __  __          ______     __  _____  _           __     _____  \n'
+			  + '|  \\/  |   /\\   |  _ \\ \\   / / |  __ \\| |        /\\\\ \\   / /__ \\ \n'
+			  + '| \\  / |  /  \\  | |_) \\ \\_/ /  | |__) | |       /  \\\\ \\_/ /   ) |\n'
+			  + '| |\\/| | / /\\ \\ |  _ < \\   /   |  ___/| |      / /\\ \\\\   /   / / \n'
+			  + '| |  | |/ ____ \\| |_) | | |    | |    | |____ / ____ \\| |   |_|  \n'
+			  + '|_|  |_/_/    \\_\\____/  |_|    |_|    |______/_/    \\_\\_|   (_)\n';
+		console.log(s);
+	</script>
+
+</body>
+</html>
