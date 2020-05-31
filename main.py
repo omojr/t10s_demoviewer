@@ -2,7 +2,7 @@ import operator
 import os
 import sqlite3
 
-from flask import Flask, render_template, send_file
+from flask import Flask, render_template, send_file, url_for
 
 from config import config
 from db import get_conn
@@ -34,6 +34,20 @@ def download_demo(demo_id):
     filename = filepath.rsplit('/', 1)[1]
     conn.close()
     return send_file(filepath, as_attachment=True, attachment_filename=filename)
+
+
+@app.context_processor
+def override_url_for():
+    return dict(url_for=dated_url_for)
+
+
+def dated_url_for(endpoint, **values):
+    if endpoint == 'static':
+        filename = values.get('filename', None)
+        if filename:
+            file_path = os.path.join(app.root_path, endpoint, filename)
+            values['q'] = int(os.stat(file_path).st_mtime)
+    return url_for(endpoint, **values)
 
 
 if __name__ == '__main__':
