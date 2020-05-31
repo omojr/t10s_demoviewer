@@ -16,7 +16,8 @@ DOWNLOAD_LINK = 'ftp://{user}:{passwd}@{host}:{port}{remote_filepath}'
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 logging.basicConfig(filename=os.path.join(BASE_DIR, config['general']['demos_logfile']),
-                    format="%(asctime)s [%(name)s %(levelno)s] - %(message)s")
+                    format="%(asctime)s [%(name)s %(levelname)s] - %(message)s",
+                    level=logging.INFO)
 logger = logging.getLogger(__file__)
 
 
