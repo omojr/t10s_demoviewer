@@ -15,7 +15,7 @@ PATTERN = r'^pug\_(?P<map>\w+)\_(?P<datetime>[\d\_\-]+)\.dem$'
 DOWNLOAD_LINK = 'ftp://{user}:{passwd}@{host}:{port}{remote_filepath}'
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-logging.basicConfig(filename=os.path.join(BASE_DIR, 'demos_update.log'),
+logging.basicConfig(filename=os.path.join(BASE_DIR, config['general']['demos_logfile']),
                     format="%(asctime)s [%(name)s %(levelno)s] - %(message)s")
 logger = logging.getLogger(__file__)
 
