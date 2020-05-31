@@ -15,10 +15,14 @@ app = Flask(__name__)
 def main():
     conn = get_conn()
     cursor = conn.cursor()
-    cursor.execute('select demo_id, server, map, datetime from demos;')
+    cursor.execute('select demo_id, filepath, server, map, datetime from demos;')
     demos = cursor.fetchall()
     conn.close()
     demos.sort(key=operator.itemgetter('datetime'), reverse=True)
+    for demo in demos:
+        path = demo.pop('filepath')
+        size = os.stat(path).st_size/1000**2
+        demo['size'] = f'{round(size, 1)} MB'
     return render_template('index.html', demos=demos)
 
 

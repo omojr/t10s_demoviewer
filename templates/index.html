@@ -33,6 +33,7 @@
 								<th class="column1">Server</th>
 								<th class="column2">Recorded</th>
 								<th class="column3">Map</th>
+								<th class="column3">File size</th>
 								<th class="column4">Download link</th>
 							</tr>
 						</thead>
@@ -42,6 +43,7 @@
 									<td class="column1">{{ demo['server'] }}</td>
 									<td class="column2">{{ demo['datetime'] }}</td>
 									<td class="column3">{{ demo['map'] }}</td>
+									<td class="column3">{{ demo['size'] }}</td>
 									<td class="column4"><a href="/get/{{ demo['demo_id'] }}">Download</a></td>
 								</tr>
 								{% endfor %}
