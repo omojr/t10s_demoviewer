@@ -6,3 +6,4 @@ demos/
 config.yml
 *.db
 .flake8
+*.log
