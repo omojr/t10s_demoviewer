@@ -1,5 +1,6 @@
 import concurrent.futures
 import ftplib
+import logging
 import os
 import re
 import urllib.request
@@ -9,9 +10,14 @@ from datetime import datetime
 from config import config
 from db import get_conn
 
+
 PATTERN = r'^pug\_(?P<map>\w+)\_(?P<datetime>[\d\_\-]+)\.dem$'
 DOWNLOAD_LINK = 'ftp://{user}:{passwd}@{host}:{port}{remote_filepath}'
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+logging.basicConfig(filename=os.path.join(BASE_DIR, 'demos_update.log'),
+                    format="%(asctime)s [%(name)s %(levelno)s] - %(message)s")
+logger = logging.getLogger(__file__)
 
 
 def get_ftp_client(creds):
@@ -52,9 +58,9 @@ def filter_demos(demodir, server_name, demos):
 
 
 def download_demo(link, filepath):
-    print(f'Downloading demo to {filepath} ...')
+    logger.info(f'Downloading demo to {filepath} ...')
     urllib.request.urlretrieve(link, filename=filepath)
-    print(f'Saved demo to {filepath}')
+    logger.info(f'Saved demo to {filepath}')
 
 
 def download_new_demos(new_demos, server_config):
@@ -74,7 +80,7 @@ def download_new_demos(new_demos, server_config):
 
 
 def save_demos_db(new_demos):
-    print('Saving new demos to DB')
+    logger.info('Saving new demo entries to DB')
     conn = get_conn()
     cursor = conn.cursor()
     for demo in new_demos:
@@ -87,7 +93,8 @@ def save_demos_db(new_demos):
                         demo['map'],
                         demo['datetime'],))
     conn.commit()
-    print('Saved demos')
+    conn.close()
+    logger.info('Saved demos')
 
 
 def update_demos():
@@ -96,24 +103,32 @@ def update_demos():
     Retrieve .dem files from servers via FTP, compare with existing,
     download new ones and add entries to DB.
     """
-    new_demos = []
     demodir = config['general']['demodir']
+    try:
+        os.mkdir(os.path.join(BASE_DIR, demodir))
+    except Exception:
+        pass
+
+    new_demos = []
     for server_name, creds in config['servers'].items():
-        print(f'Updating demos from {server_name} server...')
+        logger.info(f'Updating demos from {server_name} server...')
         demos = retrieve_demo_list(creds)
         count = len(demos)
-        print(f'Got {count} demo{"s" if count != 1 else ""} from {server_name} server.')
+        logger.info(f'Retrieved {count} demo{"s" if count != 1 else ""} on the {server_name} server')
         new = filter_demos(demodir, server_name, demos)
         count = len(new)
-        print(f'Got {count} new demo{"s" if count != 1 else ""} from {server_name} server.')
+        logger.info(f'Got {count} new demo{"s" if count != 1 else ""} from {server_name} server')
         new_demos.extend(parse_demolist(demodir, server_name, new))
         try:
             os.mkdir(os.path.join(BASE_DIR, demodir, server_name))
         except Exception:
             pass
 
-    download_new_demos(new_demos, config['servers'])
-    save_demos_db(new_demos)
+    if new_demos:
+        download_new_demos(new_demos, config['servers'])
+        save_demos_db(new_demos)
+    else:
+        logger.info('No new demos on the servers')
 
 
 if __name__ == '__main__':
