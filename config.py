@@ -8,3 +8,5 @@ else:
 
 with open(CONFIG_PATH, 'r') as f:
     config = yaml.safe_load(f)
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))

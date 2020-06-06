@@ -4,10 +4,10 @@ import sqlite3
 
 from flask import Flask, render_template, send_file, url_for
 
-from config import config
+from config import config, BASE_DIR
 from db import get_conn
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 app = Flask(__name__)
 
 
