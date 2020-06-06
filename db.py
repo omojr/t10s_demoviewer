@@ -1,4 +1,7 @@
+import os
 import sqlite3
+
+from config import BASE_DIR
 
 
 def _dict_factory(cursor, row):
@@ -9,6 +12,6 @@ def _dict_factory(cursor, row):
 
 
 def get_conn():
-    conn = sqlite3.connect('demos.db')
+    conn = sqlite3.connect(os.path.join(BASE_DIR, 'demos.db'))
     conn.row_factory = _dict_factory
     return conn
