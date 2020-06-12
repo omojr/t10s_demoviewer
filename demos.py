@@ -49,7 +49,7 @@ def retrieve_demo_list(creds):
     ftp = get_ftp_client(creds)
     if ftp.pwd() != creds['remote_dir']:
         ftp.cwd(creds['remote_dir'])
-    return {file[0]: file[1]['size'] for file in ftp.mlsd() if file[0].endswith('.dem')}
+    return {file[0]: int(file[1]['size']) for file in ftp.mlsd() if file[0].endswith('.dem')}
 
 
 def filter_demos(demodir, server_name, demos):
@@ -59,6 +59,7 @@ def filter_demos(demodir, server_name, demos):
     for demo, size in demos.items():
         path = os.path.join(demos_path, demo)
         if not os.path.exists(path) or os.stat(path).st_size != size:
+            print(path)
             new_demos.append(demo)
     return new_demos
 
