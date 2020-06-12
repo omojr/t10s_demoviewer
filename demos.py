@@ -3,6 +3,7 @@ import ftplib
 import logging
 import os
 import re
+import sqlite3
 import urllib.request
 import uuid
 from datetime import datetime
@@ -91,13 +92,16 @@ def save_demos_db(new_demos):
     cursor = conn.cursor()
     for demo in new_demos:
         demo_id = str(uuid.uuid4())
-        cursor.execute('''insert into demos(demo_id, server, filepath, map, datetime)
-                          values (?, ?, ?, ?, ?)''',
-                       (demo_id,
-                        demo['server'],
-                        demo['filepath'],
-                        demo['map'],
-                        demo['datetime'],))
+        try:
+            cursor.execute('''insert into demos(demo_id, server, filepath, map, datetime)
+                              values (?, ?, ?, ?, ?)''',
+                           (demo_id,
+                            demo['server'],
+                            demo['filepath'],
+                            demo['map'],
+                            demo['datetime'],))
+        except sqlite3.IntegrityError:
+            logger.warning('Demo entry already exists')
     conn.commit()
     conn.close()
     logger.info('Saved demos')
