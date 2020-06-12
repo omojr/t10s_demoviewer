@@ -59,7 +59,6 @@ def filter_demos(demodir, server_name, demos):
     for demo, size in demos.items():
         path = os.path.join(demos_path, demo)
         if not os.path.exists(path) or os.stat(path).st_size != size:
-            print(path)
             new_demos.append(demo)
     return new_demos
 
