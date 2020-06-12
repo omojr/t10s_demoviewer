@@ -23,7 +23,8 @@ logger = logging.getLogger(__file__)
 
 def get_ftp_client(creds):
     client = ftplib.FTP(host=creds['host'])
-    client.login(user=creds['user'], passwd=creds['passwd'])
+    logger.info(client.login(user=creds['user'], passwd=creds['passwd']))
+    logger.info(client.sendcmd('TYPE i'))
     return client
 
 
@@ -48,13 +49,17 @@ def retrieve_demo_list(creds):
     ftp = get_ftp_client(creds)
     if ftp.pwd() != creds['remote_dir']:
         ftp.cwd(creds['remote_dir'])
-    return [file for file in ftp.nlst() if file.endswith('.dem')]
+    return {file[0]: file[1]['size'] for file in ftp.mlsd() if file[0].endswith('.dem')}
 
 
 def filter_demos(demodir, server_name, demos):
     """Filter out existing demos and return new ones"""
     demos_path = os.path.join(BASE_DIR, demodir, server_name)
-    new_demos = [demo for demo in demos if not os.path.exists(os.path.join(demos_path, demo))]
+    new_demos = []
+    for demo, size in demos.items():
+        path = os.path.join(demos_path, demo)
+        if not os.path.exists(path) or os.stat(path).st_size != size:
+            new_demos.append(demo)
     return new_demos
 
 
